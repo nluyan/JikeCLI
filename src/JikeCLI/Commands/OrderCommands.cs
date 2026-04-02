@@ -1,4 +1,4 @@
-using ConsoleAppFramework;
+﻿using ConsoleAppFramework;
 using JikeCLI.Infrastructure;
 using JikeCLI.Models;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +10,13 @@ public sealed class OrderCommands(JikeApiClient apiClient, JikeConfigStore confi
 {
     private const string RequiredTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
+    /// <summary>
+    /// 创建一条工单；如果未指定要求时间，默认使用当前时间后 2 小时。
+    /// </summary>
+    /// <param name="phone">发起人的手机号。</param>
+    /// <param name="urgency">紧急程度：0 表示普通，1 表示紧急。</param>
+    /// <param name="content">工单内容或问题描述。</param>
+    /// <param name="requiredTime">要求时间，格式为 yyyy-MM-dd HH:mm:ss；不填时默认当前时间后 2 小时。</param>
     [Command("add")]
     public async Task Add(
         string phone,
@@ -56,7 +63,7 @@ public sealed class OrderCommands(JikeApiClient apiClient, JikeConfigStore confi
         }
         else
         {
-            Console.WriteLine($"工单创建成功，工单ID: {response.Data}");
+            Console.WriteLine($"工单创建成功，工单 ID: {response.Data}");
         }
 
         Console.WriteLine($"要求时间: {request.RequiredTime}");

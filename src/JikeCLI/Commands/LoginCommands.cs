@@ -1,10 +1,15 @@
-using ConsoleAppFramework;
+﻿using ConsoleAppFramework;
 using JikeCLI.Infrastructure;
 
 namespace JikeCLI.Commands;
 
 public sealed class LoginCommands(JikeApiClient apiClient, JikeConfigStore configStore)
 {
+    /// <summary>
+    /// 登录 Jike 系统并保存访问令牌，执行时会交互式提示输入密码。
+    /// </summary>
+    /// <param name="username">登录账号，例如工号或用户名。</param>
+    /// <param name="tenant">租户标识，用于确定登录的目标租户。</param>
     [Command("login")]
     public async Task Login(
         string username,
@@ -21,7 +26,7 @@ public sealed class LoginCommands(JikeApiClient apiClient, JikeConfigStore confi
             throw new JikeCliException("--tenant 不能为空。");
         }
 
-        var password = PasswordPrompt.ReadPassword("Password: ");
+        var password = PasswordPrompt.ReadPassword("密码: ");
         if (string.IsNullOrWhiteSpace(password))
         {
             throw new JikeCliException("密码不能为空。");
