@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../ConsoleAppFramework/ConsoleAppFramework.csproj" />
+  <Project Path="JikeCLI.csproj" />
+</Solution>
