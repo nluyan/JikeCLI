@@ -10,10 +10,12 @@ public sealed class LoginCommands(JikeApiClient apiClient, JikeConfigStore confi
     /// </summary>
     /// <param name="username">登录账号，例如工号或用户名。</param>
     /// <param name="tenant">租户标识，用于确定登录的目标租户。</param>
+    /// <param name="password">登录密码；不传时会交互式提示输入。</param>
     [Command("login")]
     public async Task Login(
         string username,
         string tenant,
+        string? password = null,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(username))
@@ -26,7 +28,7 @@ public sealed class LoginCommands(JikeApiClient apiClient, JikeConfigStore confi
             throw new JikeCliException("--tenant 不能为空。");
         }
 
-        var password = PasswordPrompt.ReadPassword("密码: ");
+        password ??= PasswordPrompt.ReadPassword("密码: ");
         if (string.IsNullOrWhiteSpace(password))
         {
             throw new JikeCliException("密码不能为空。");
@@ -47,6 +49,7 @@ public sealed class LoginCommands(JikeApiClient apiClient, JikeConfigStore confi
         configStore.Save(config);
 
         Console.WriteLine("登录成功。");
+        Console.WriteLine($"Access Token: {loginResponse.AccessToken}");
         Console.WriteLine($"Token 已保存到: {configStore.ConfigFilePath}");
     }
 }

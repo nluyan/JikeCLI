@@ -17,12 +17,14 @@ public sealed class OrderCommands(JikeApiClient apiClient, JikeConfigStore confi
     /// <param name="urgency">紧急程度：0 表示普通，1 表示紧急。</param>
     /// <param name="content">工单内容或问题描述。</param>
     /// <param name="requiredTime">要求时间，格式为 yyyy-MM-dd HH:mm:ss；不填时默认当前时间后 2 小时。</param>
+    /// <param name="files">附件 ID，多个 ID 使用英文逗号分隔，先通过 jike file upload 获取。</param>
     [Command("add")]
     public async Task Add(
         string phone,
         [Range(0, 1, ErrorMessage = "--urgency 只支持 0(普通) 或 1(紧急)。")] int urgency,
         string content,
         string? requiredTime = null,
+        string? files = null,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(phone))
@@ -42,13 +44,15 @@ public sealed class OrderCommands(JikeApiClient apiClient, JikeConfigStore confi
         }
 
         var dueTime = ResolveRequiredTime(requiredTime);
+        var fileIds = ParseFiles(files);
         var request = new AddOrderWorkRequest
         {
             StartUserPhone = phone,
             Source = "机器人",
             Urgency = urgency == 0 ? "普通" : "紧急",
             Desc = content,
-            RequiredTime = dueTime.ToString(RequiredTimeFormat, CultureInfo.InvariantCulture)
+            RequiredTime = dueTime.ToString(RequiredTimeFormat, CultureInfo.InvariantCulture),
+            Files = fileIds
         };
 
         var response = await apiClient.AddOrderWorkAsync(
@@ -67,6 +71,11 @@ public sealed class OrderCommands(JikeApiClient apiClient, JikeConfigStore confi
         }
 
         Console.WriteLine($"要求时间: {request.RequiredTime}");
+
+        if (fileIds is { Length: > 0 })
+        {
+            Console.WriteLine($"附件数量: {fileIds.Length}");
+        }
     }
 
     private static DateTime ResolveRequiredTime(string? requiredTime)
@@ -87,5 +96,23 @@ public sealed class OrderCommands(JikeApiClient apiClient, JikeConfigStore confi
         }
 
         throw new JikeCliException($"--requiredTime 格式必须为 {RequiredTimeFormat}。");
+    }
+
+    private static string[]? ParseFiles(string? files)
+    {
+        if (string.IsNullOrWhiteSpace(files))
+        {
+            return null;
+        }
+
+        var fileIds = files
+            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+        if (fileIds.Length == 0)
+        {
+            throw new JikeCliException("--files 至少要包含一个附件 ID。");
+        }
+
+        return fileIds;
     }
 }

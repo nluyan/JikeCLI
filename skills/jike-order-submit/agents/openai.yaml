@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jike Order Submit"
+  short_description: "Submit Jike work orders from Linux with attachments."
+  default_prompt: "Use $jike-order-submit to submit a Jike work order from the current request."

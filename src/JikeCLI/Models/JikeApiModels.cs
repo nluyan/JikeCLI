@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace JikeCLI.Models;
@@ -49,6 +49,9 @@ public sealed class AddOrderWorkRequest
 
     [JsonPropertyName("requiredTime")]
     public string? RequiredTime { get; set; }
+
+    [JsonPropertyName("files")]
+    public string[]? Files { get; set; }
 }
 
 public sealed class ApiResponse<T>
@@ -85,4 +88,13 @@ public sealed class ApiErrorResponse
 
     [JsonPropertyName("data")]
     public JsonElement Data { get; set; }
+}
+
+public sealed class UploadedFileItem
+{
+    [JsonPropertyName("fileName")]
+    public string? FileName { get; set; }
+
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 }

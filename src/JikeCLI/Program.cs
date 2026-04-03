@@ -1,4 +1,4 @@
-using ConsoleAppFramework;
+﻿using ConsoleAppFramework;
 using JikeCLI.Commands;
 using JikeCLI.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +20,7 @@ var app = ConsoleApp.Create()
     });
 
 app.Add<LoginCommands>();
+app.Add<FileCommands>("file");
 app.Add<OrderCommands>("order");
 
 await app.RunAsync(args);

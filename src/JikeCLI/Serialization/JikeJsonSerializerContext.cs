@@ -1,4 +1,4 @@
-using JikeCLI.Models;
+﻿using JikeCLI.Models;
 using System.Text.Json.Serialization;
 
 namespace JikeCLI.Serialization;
@@ -12,6 +12,7 @@ namespace JikeCLI.Serialization;
 [JsonSerializable(typeof(LoginResponse))]
 [JsonSerializable(typeof(AddOrderWorkRequest))]
 [JsonSerializable(typeof(ApiResponse<string?>))]
+[JsonSerializable(typeof(ApiResponse<List<UploadedFileItem>?>))]
 [JsonSerializable(typeof(ApiErrorResponse))]
 public partial class JikeJsonSerializerContext : JsonSerializerContext
 {
